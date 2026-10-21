@@ -22,6 +22,36 @@ public static class TestAppBuilder
 public sealed class WindowTests
 {
     [AvaloniaFact]
+    public void LogoMenuControlsBorderlessWindow()
+    {
+        var window = new MainWindow { DataContext = new MainWindowViewModel(new PrototypeData()) };
+        try
+        {
+            window.Show();
+            Assert.Equal(WindowDecorations.None, window.WindowDecorations);
+            Assert.NotNull(window.Icon);
+            var button = window.FindControl<Button>("WindowMenuButton")!;
+            var menu = Assert.IsType<MenuFlyout>(button.Flyout);
+            menu.ShowAt(button);
+            Dispatcher.UIThread.RunJobs();
+            var items = menu.Items.OfType<MenuItem>().ToArray();
+            Assert.Equal(new[] { "Выход", "Свернуть", "Развернуть" }, items.Select(item => item.Header));
+            items[2].RaiseEvent(new Avalonia.Interactivity.RoutedEventArgs(MenuItem.ClickEvent));
+            Assert.Equal(WindowState.Maximized, window.WindowState);
+            Assert.Equal("Восстановить", items[2].Header);
+            items[2].RaiseEvent(new Avalonia.Interactivity.RoutedEventArgs(MenuItem.ClickEvent));
+            Assert.Equal(WindowState.Normal, window.WindowState);
+            Assert.Equal("Развернуть", items[2].Header);
+            items[1].RaiseEvent(new Avalonia.Interactivity.RoutedEventArgs(MenuItem.ClickEvent));
+            Assert.Equal(WindowState.Minimized, window.WindowState);
+            window.WindowState = WindowState.Normal;
+            items[0].RaiseEvent(new Avalonia.Interactivity.RoutedEventArgs(MenuItem.ClickEvent));
+            Assert.False(window.IsVisible);
+        }
+        finally { window.Close(); }
+    }
+
+    [AvaloniaFact]
     public void AllFourScreensLoadAndNavigationChangesVisibleContent()
     {
         var vm = new MainWindowViewModel(new PrototypeData());

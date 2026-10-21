@@ -1,4 +1,4 @@
-<Window xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:vm="using:QRLab.View.ViewModels" xmlns:views="using:QRLab.View.Views" xmlns:icons="using:QRLab.View.Controls" x:Class="QRLab.View.Views.MainWindow" x:DataType="vm:MainWindowViewModel" Title="QRLab — лаборатория устойчивости кодов" Width="1440" Height="940" MinWidth="1180" MinHeight="760">
+<Window xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:vm="using:QRLab.View.ViewModels" xmlns:views="using:QRLab.View.Views" xmlns:icons="using:QRLab.View.Controls" x:Class="QRLab.View.Views.MainWindow" x:DataType="vm:MainWindowViewModel" Title="QRLab — лаборатория устойчивости кодов" Width="1440" Height="940" MinWidth="1180" MinHeight="760" WindowDecorations="None" CanResize="True">
   <Window.DataTemplates>
     <DataTemplate DataType="{x:Type vm:GenerationViewModel}">
       <views:GenerationView/>
@@ -14,10 +14,25 @@
     </DataTemplate>
   </Window.DataTemplates>
   <Grid RowDefinitions="42,*,30,76">
-    <Border Background="#1A1F21" BorderBrush="#303839" BorderThickness="0,0,0,1" Padding="20,0">
+    <Border x:Name="TitleBar" Background="#1A1F21" BorderBrush="#303839" BorderThickness="0,0,0,1" Padding="12,0" PointerPressed="TitleBarPointerPressed">
       <Grid ColumnDefinitions="Auto,*,Auto">
         <StackPanel Orientation="Horizontal" Spacing="10">
-          <icons:SvgIcon Source="logo" Width="20" Height="20" Foreground="#75D9BE"/>
+          <Button x:Name="WindowMenuButton"
+                  Classes="flat" 
+                  Padding="4"
+                  HorizontalContentAlignment="Center" 
+                  VerticalContentAlignment="Center"
+                  ToolTip.Tip="Управление окном" 
+                  AutomationProperties.Name="Меню окна">
+            <Button.Flyout>
+              <MenuFlyout Placement="BottomEdgeAlignedLeft">
+                <MenuItem x:Name="ExitWindowMenuItem" Header="Выход" Click="ExitWindowClick"/>
+                <MenuItem x:Name="MinimizeWindowMenuItem" Header="Свернуть" Click="MinimizeWindowClick"/>
+                <MenuItem x:Name="MaximizeWindowMenuItem" Header="Развернуть" Click="MaximizeWindowClick"/>
+              </MenuFlyout>
+            </Button.Flyout>
+            <icons:SvgIcon Source="logo" Width="20" Height="20" Foreground="{DynamicResource ActiveIconBrush}"/>
+          </Button>
           <TextBlock Text="QRLab" FontWeight="Bold" FontSize="15"/>
           <TextBlock Text="/" Classes="muted" Margin="12,0"/>
           <Button Classes="flat" Content="О проекте" Command="{Binding AboutCommand}"/>
