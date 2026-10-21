@@ -74,7 +74,7 @@ public sealed class WindowTests
             vm.NavigateCommand.Execute("03");
             vm.Reading.RunCommand.Execute(null);
             Dispatcher.UIThread.RunJobs();
-            Assert.Equal(120, vm.Reading.Checked);
+            Assert.Equal(120, vm.Reading.ResultsChecked);
             var selected = vm.Workspace.SelectedSample;
             vm.Reading.Filter = "Ошибки"; vm.Reading.Search = "no-match";
             Dispatcher.UIThread.RunJobs();

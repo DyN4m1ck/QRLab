@@ -12,10 +12,15 @@ public sealed class PrototypeData : IPrototypeData
             options.UseTemplate ? options.Template.Replace("{num}", n.ToString("0000")) : options.Template, options.Format,
             CreateMatrix(n, options.Format == "Штрихкод"),
             [new("01", "Размытие Гаусса", "σ = 1,2 px", 1), new("02", "Кляксы", "3 маски • 6,4% площади", 2), new("03", "Перспектива", "X: 8° • Y: −4°", 3)], options)).ToArray();
-    public IReadOnlyList<RecognitionPreview> Recognize(IReadOnlyList<SamplePreview> samples, RecognitionOptions options) =>
-        samples.Select(s => new RecognitionPreview(s.Number, s.Number % 5 != 2,
+
+    public IReadOnlyList<RecognitionPreview> Recognize(IReadOnlyList<SamplePreview> samples, RecognitionOptions options)
+    {
+        return samples.Select(s => new RecognitionPreview(s.Number,
+            s.Number % 5 != 2 ? Status.Success : s.Number % 3 != 0 ? Status.Failed : Status.Timeout,
             Math.Round(18 + s.Number * 7.13 % 33, 1),
             string.Join(" → ", s.Operations.Select(o => o.Name)))).ToArray();
+    }
+
     public FrameOptions CreateVariant(int seed, FrameOptions current) => current with { AngleX = seed % 31 - 15, AngleY = seed * 3 % 21 - 10, Seed = seed };
     public bool[,] CreateFrame(bool[,] original, FrameOptions options, bool difference = false)
     {

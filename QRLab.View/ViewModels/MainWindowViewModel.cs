@@ -2,7 +2,11 @@ using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using QRLab.Core.Services;
+using ResultStatus = QRLab.Core.Services.Status;
+
+
 namespace QRLab.View.ViewModels;
+
 public sealed partial class MainWindowViewModel : ObservableObject
 {
     public WorkspaceViewModel Workspace { get; }
@@ -29,7 +33,7 @@ public sealed partial class WorkspaceViewModel : ObservableObject
     private readonly IPrototypeData _data;
     public ObservableCollection<SampleViewModel> Samples { get; } = [];
     [ObservableProperty] private SampleViewModel? _selectedSample;
-    [ObservableProperty] private string _notice = "Интерактивный макет • демонстрационные данные";
+    [ObservableProperty] private string _notice = "Интерактивный макет• демонстрационные данные";
     public string Position => $"{(SelectedSample is null ? 0 : Samples.IndexOf(SelectedSample) + 1)} / {Samples.Count}";
     public WorkspaceViewModel(IPrototypeData data)
     {
@@ -50,7 +54,7 @@ public sealed partial class WorkspaceViewModel : ObservableObject
     public void Export(ExportOptions options) => Notice = _data.Export(Samples.Select(s => s.Preview).ToArray(), options);
     public void Recognize(RecognitionOptions? options = null)
     {
-        foreach (var result in _data.Recognize(Samples.Select(s => s.Preview with { Operations = s.Operations.Select(o => new MutationPreview(o.Number, o.Name, o.Details, o.Stage)).ToArray() }).ToArray(), options ?? new("ZXing • 2.3.0", "Последний кадр", 500, true)))
+        foreach (var result in _data.Recognize(Samples.Select(s => s.Preview with { Operations = s.Operations.Select(o => new MutationPreview(o.Number, o.Name, o.Details, o.Stage)).ToArray() }).ToArray(), options ?? new("ZXing • 2.3.0", 500, true)))
             Samples.First(s => s.Preview.Number == result.Number).Result = result;
         Notice = "Интерактивный макет • демонстрационные данные";
     }
@@ -79,10 +83,18 @@ public sealed partial class SampleViewModel : ObservableObject
     public ObservableCollection<OperationViewModel> Operations { get; } = [];
     [ObservableProperty] [NotifyPropertyChangedFor(nameof(Status), nameof(IsFailure), nameof(Time), nameof(Chain), nameof(Decoded))]
     private RecognitionPreview? _result;
-    public string Status => Result is null ? "Не проверен" : Result.Success ? "Считан" : "Не считан";
-    public bool IsFailure => Result is { Success: false };
+
+    public string Status => Result?.Status switch
+    {
+        null        => "Не обработан",
+        ResultStatus.Success     => "Считан",
+        ResultStatus.Failed     => "Не считан",
+        ResultStatus.Timeout     => "Таймаут",
+        _           => "ERROR"
+    };
+    public bool IsFailure => Result is not { Status: Core.Services.Status.Success };
     public string Time => Result is null ? "—" : $"{Result.Milliseconds:N1} мс";
     public string Chain => Result?.Chain ?? "Ожидает распознавания";
-    public string Decoded => Result is { Success: true } ? Content : "—";
+    public string Decoded => Result is not { Status: Core.Services.Status.Success } ? Content : "—";
 }
 public sealed record OperationViewModel(string Number, string Name, string Details, int Stage, bool[,]? Modules = null, FrameOptions? Options = null);
