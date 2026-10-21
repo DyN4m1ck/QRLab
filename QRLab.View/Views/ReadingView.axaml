@@ -1,0 +1,156 @@
+<UserControl xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:vm="using:QRLab.View.ViewModels" xmlns:c="using:QRLab.View.Controls" x:Class="QRLab.View.Views.ReadingView" x:DataType="vm:ReadingViewModel">
+  <Grid Margin="18" RowDefinitions="Auto,110,*" RowSpacing="12">
+    <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,16">
+      <StackPanel Spacing="4">
+        <TextBlock Text="{Binding Title}" FontSize="22" FontWeight="SemiBold"/>
+        <TextBlock Text="{Binding Description}" Classes="muted"/>
+      </StackPanel>
+      <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+        <Button Content="↓  Экспорт CSV" Command="{Binding ExportCommand}"/>
+        <Button Classes="primary" Content="▷  Запустить распознавание" Command="{Binding RunCommand}"/>
+      </StackPanel>
+    </Grid>
+    <Grid Grid.Row="1" ColumnDefinitions="*,*,*,*" ColumnSpacing="12">
+      <Border Grid.Column="0" Classes="card" Padding="16">
+        <StackPanel Spacing="9">
+          <TextBlock Text="ПРОВЕРЕНО ОБРАЗЦОВ" Classes="muted" FontSize="10"/>
+          <TextBlock Text="{Binding Checked}" FontSize="30" FontFamily="Consolas" Foreground="#DFE6E4"/>
+          <TextBlock Text="Демонстрационный прогон" Classes="muted" FontSize="10"/>
+        </StackPanel>
+      </Border>
+      <Border Grid.Column="1" Classes="card" Padding="16">
+        <StackPanel Spacing="9">
+          <TextBlock Text="УСПЕШНО СЧИТАНО" Classes="muted" FontSize="10"/>
+          <TextBlock Text="{Binding Success}" FontSize="30" FontFamily="Consolas" Foreground="#75D9BE"/>
+          <TextBlock Text="{Binding Rate}" Classes="muted" FontSize="10"/>
+        </StackPanel>
+      </Border>
+      <Border Grid.Column="2" Classes="card" Padding="16">
+        <StackPanel Spacing="9">
+          <TextBlock Text="НЕ РАСПОЗНАНО" Classes="muted" FontSize="10"/>
+          <TextBlock Text="{Binding Failed}" FontSize="30" FontFamily="Consolas" Foreground="#E58A86"/>
+          <TextBlock Text="Требуется анализ" Classes="muted" FontSize="10"/>
+        </StackPanel>
+      </Border>
+      <Border Grid.Column="3" Classes="card" Padding="16">
+        <StackPanel Spacing="9">
+          <TextBlock Text="СРЕДНЕЕ ВРЕМЯ" Classes="muted" FontSize="10"/>
+          <TextBlock Text="{Binding Average}" FontSize="30" FontFamily="Consolas" Foreground="#DFE6E4"/>
+          <TextBlock Text="На один образец" Classes="muted" FontSize="10"/>
+        </StackPanel>
+      </Border>
+    </Grid>
+    <Grid Grid.Row="2" ColumnDefinitions="*,280" ColumnSpacing="12">
+      <Border Classes="card">
+        <Grid RowDefinitions="Auto,Auto,34,*,Auto">
+          <Border Classes="panelHead">
+            <TextBlock Text="Результаты распознавания" Classes="heading"/>
+          </Border>
+          <Grid Grid.Row="1" ColumnDefinitions="Auto,*" Margin="10" ColumnSpacing="12">
+            <ListBox Classes="tabs" ItemsSource="{Binding Filters}" SelectedItem="{Binding Filter, Mode=TwoWay}">
+              <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                  <StackPanel Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+              </ListBox.ItemsPanel>
+            </ListBox>
+            <TextBox Grid.Column="1" Text="{Binding Search, Mode=TwoWay}" PlaceholderText="⌕  Найти образец или содержимое" VerticalAlignment="Center"/>
+          </Grid>
+          <Border Grid.Row="2" Background="#171C1E" Padding="12,0">
+            <Grid ColumnDefinitions="105,100,*,165,85">
+              <TextBlock Text="ОБРАЗЕЦ" Classes="muted" FontSize="9"/>
+              <TextBlock Grid.Column="1" Text="РЕЗУЛЬТАТ" Classes="muted" FontSize="9"/>
+              <TextBlock Grid.Column="2" Text="ЦЕПОЧКА МУТАЦИЙ" Classes="muted" FontSize="9"/>
+              <TextBlock Grid.Column="3" Text="СОДЕРЖИМОЕ" Classes="muted" FontSize="9"/>
+              <TextBlock Grid.Column="4" Text="ВРЕМЯ" Classes="muted" FontSize="9"/>
+            </Grid>
+          </Border>
+          <ListBox Grid.Row="3" ItemsSource="{Binding Results}" SelectedItem="{Binding SelectedResult, Mode=TwoWay}">
+            <ListBox.ItemTemplate>
+              <DataTemplate x:DataType="vm:SampleViewModel">
+                <Grid ColumnDefinitions="105,100,*,165,85" MinHeight="28">
+                  <TextBlock Text="{Binding Name}" Classes="mono" FontSize="11"/>
+                  <Border Grid.Column="1" Background="#293E38" CornerRadius="3" Padding="6,4" HorizontalAlignment="Left">
+                    <TextBlock Text="{Binding Status}" Foreground="#96D3BA" FontSize="10"/>
+                  </Border>
+                  <TextBlock Grid.Column="2" Text="{Binding Chain}" FontSize="10" Foreground="#A7B2AF" TextTrimming="CharacterEllipsis" Margin="0,0,10,0"/>
+                  <TextBlock Grid.Column="3" Text="{Binding Decoded}" FontSize="10" Classes="mono"/>
+                  <TextBlock Grid.Column="4" Text="{Binding Time}" FontSize="11" Classes="mono"/>
+                  <Border Grid.Column="1" IsVisible="{Binding IsFailure}" Background="#422C2C" CornerRadius="3" Padding="6,4" HorizontalAlignment="Left">
+                    <TextBlock Text="{Binding Status}" Classes="danger" FontSize="10"/>
+                  </Border>
+                </Grid>
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+          <TextBlock Grid.Row="3" Text="Нет подходящих образцов. Измените поиск или фильтр." IsVisible="{Binding NoResults}" HorizontalAlignment="Center" VerticalAlignment="Center" Classes="muted"/>
+          <Border Grid.Row="4" Padding="14">
+            <TextBlock Text="Выберите строку, чтобы открыть образец в сравнении. Поиск работает по имени и исходному содержимому." Classes="muted" FontSize="10" TextWrapping="Wrap"/>
+          </Border>
+        </Grid>
+      </Border>
+      <Grid Grid.Column="1" RowDefinitions="*,Auto" RowSpacing="12">
+        <ScrollViewer>
+          <StackPanel Spacing="12">
+            <Border Classes="card">
+              <StackPanel>
+                <Border Classes="panelHead">
+                  <TextBlock Text="Параметры прогона" Classes="heading"/>
+                </Border>
+                <StackPanel Margin="14" Spacing="8">
+                  <TextBlock Text="Декодер" Classes="label"/>
+                  <ComboBox ItemsSource="{Binding Decoders}" SelectedItem="{Binding Decoder, Mode=TwoWay}"/>
+                  <TextBlock Text="Источник" Classes="label"/>
+                  <ComboBox ItemsSource="{Binding Sources}" SelectedItem="{Binding Source, Mode=TwoWay}"/>
+                  <TextBlock Text="Тайм-аут, мс" Classes="label"/>
+                  <NumericUpDown Value="{Binding Timeout, Mode=TwoWay}" Minimum="50" Maximum="10000" Increment="50"/>
+                  <CheckBox Content="Усиленный поиск" IsChecked="{Binding Enhanced, Mode=TwoWay}" FontSize="11"/>
+                  <Border Classes="divider"/>
+                  <TextBlock Text="Настройки применяются при запуске нового прогона." Classes="muted" TextWrapping="Wrap" FontSize="10"/>
+                </StackPanel>
+              </StackPanel>
+            </Border>
+            <Border Classes="card">
+              <StackPanel Margin="14" Spacing="12">
+                <TextBlock Text="Сводка распознавания" Classes="heading"/>
+                <Grid ColumnDefinitions="*,Auto">
+                  <TextBlock Text="Код не найден" Classes="muted"/>
+                  <TextBlock Grid.Column="1" Text="{Binding Failed}" Classes="danger"/>
+                </Grid>
+                <ProgressBar Maximum="{Binding Workspace.Samples.Count}" Value="{Binding Failed}" Foreground="#E58A86" Height="4"/>
+                <Grid ColumnDefinitions="*,Auto">
+                  <TextBlock Text="Успешно считано" Classes="muted"/>
+                  <TextBlock Grid.Column="1" Text="{Binding Success}" Classes="accent"/>
+                </Grid>
+                <ProgressBar Maximum="{Binding Workspace.Samples.Count}" Value="{Binding Success}" Foreground="#75D9BE" Height="4"/>
+              </StackPanel>
+            </Border>
+          </StackPanel>
+        </ScrollViewer>
+        <Border Background="#244039" CornerRadius="5" Padding="16" Grid.Row="1">
+          <StackPanel Spacing="12">
+            <TextBlock Text="{Binding Workspace.SelectedSample.Name}" Classes="accent"/>
+            <TextBlock Text="{Binding Workspace.SelectedSample.Content}" Classes="mono"/>
+            <TextBlock Text="Сравните исходный и изменённый кадры, чтобы оценить влияние цепочки мутаций." Classes="muted" TextWrapping="Wrap"/>
+            <Button Content="→  Открыть сравнение" Command="{ReflectionBinding $parent[Window].DataContext.NavigateCommand}" CommandParameter="04" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+          </StackPanel>
+        </Border>
+      </Grid>
+    </Grid>
+    <Border Grid.RowSpan="3" Background="#DD0B1011" IsVisible="{Binding IsExportOpen}">
+      <Border Classes="card" Width="440" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="28">
+        <StackPanel Spacing="16">
+          <TextBlock Text="Экспорт результатов / CSV" FontSize="20"/>
+          <TextBlock Text="Образец · результат · цепочка · содержимое · время" Classes="muted" TextWrapping="Wrap"/>
+          <TextBlock Text="Папка назначения" Classes="label"/>
+          <TextBox Text="{Binding ExportDestination, Mode=TwoWay}"/>
+          <TextBlock Text="В таблицу войдут все образцы текущего набора." Classes="muted"/>
+          <StackPanel Orientation="Horizontal" Spacing="8">
+            <Button Content="Отмена" Command="{Binding ExportCommand}"/>
+            <Button Classes="primary" Content="Экспортировать CSV" Command="{Binding ConfirmExportCommand}"/>
+          </StackPanel>
+        </StackPanel>
+      </Border>
+    </Border>
+  </Grid>
+</UserControl>

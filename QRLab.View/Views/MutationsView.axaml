@@ -1,0 +1,152 @@
+<UserControl xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:vm="using:QRLab.View.ViewModels" xmlns:c="using:QRLab.View.Controls" x:Class="QRLab.View.Views.MutationsView" x:DataType="vm:MutationsViewModel">
+  <Grid Margin="18" RowDefinitions="Auto,*">
+    <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,16">
+      <StackPanel Spacing="4">
+        <TextBlock Text="{Binding Title}" FontSize="22" FontWeight="SemiBold"/>
+        <TextBlock Text="{Binding Description}" Classes="muted"/>
+      </StackPanel>
+      <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+        <Button Content="↶  Отменить" Command="{Binding UndoCommand}"/>
+        <Button Content="↷  Повторить" Command="{Binding RedoCommand}"/>
+        <Button Classes="primary" Content="▱  Применить к набору" Command="{Binding ApplyCommand}"/>
+      </StackPanel>
+    </Grid>
+    <Grid Grid.Row="1" ColumnDefinitions="230,*,260" ColumnSpacing="12">
+      <Border Classes="card">
+        <Grid RowDefinitions="Auto,*">
+          <Border Classes="panelHead">
+            <TextBlock Text="Инструменты" Classes="heading"/>
+          </Border>
+          <ScrollViewer Grid.Row="1">
+            <StackPanel Margin="14" Spacing="8">
+              <ListBox Classes="tabs" ItemsSource="{Binding Modes}" SelectedItem="{Binding Mode, Mode=TwoWay}">
+                <ListBox.ItemsPanel>
+                  <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal"/>
+                  </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+              </ListBox>
+              <ListBox Classes="tabs" ItemsSource="{Binding Tools}" SelectedItem="{Binding Tool, Mode=TwoWay}">
+                <ListBox.ItemsPanel>
+                  <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal"/>
+                  </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+              </ListBox>
+              <Grid ColumnDefinitions="*,Auto">
+                <TextBlock Text="Диаметр кисти" Classes="label"/>
+                <TextBlock Grid.Column="1" Text="{Binding BrushSize, StringFormat={}{0:N0} px}" Classes="muted"/>
+              </Grid>
+              <Slider Minimum="8" Maximum="120" Value="{Binding BrushSize, Mode=TwoWay}"/>
+              <Grid ColumnDefinitions="*,Auto">
+                <TextBlock Text="Непрозрачность" Classes="label"/>
+                <TextBlock Grid.Column="1" Text="{Binding Opacity, StringFormat={}{0:N0}%}" Classes="muted"/>
+              </Grid>
+              <Slider Minimum="5" Maximum="100" Value="{Binding Opacity, Mode=TwoWay}"/>
+              <TextBlock Text="Цвет кисти                     ●  #111918" Classes="muted"/>
+              <Button IsEnabled="{Binding IsManual}" Content="＋  Добавить мазок" Command="{Binding AddCommand}" CommandParameter="2" HorizontalAlignment="Stretch"/>
+              <Border Classes="divider"/>
+              <TextBlock Text="Программные искажения" Classes="heading"/>
+              <Button Content="◉  Размытие Гаусса          ＋" Command="{Binding AddCommand}" CommandParameter="1" HorizontalAlignment="Stretch"/>
+              <Button Content="◌  Случайные кляксы       ＋" Command="{Binding AddCommand}" CommandParameter="2" HorizontalAlignment="Stretch"/>
+              <Button Content="▱  Перспектива                 ＋" Command="{Binding AddCommand}" CommandParameter="3" HorizontalAlignment="Stretch"/>
+              <Border Classes="divider"/>
+              <TextBlock Text="Контроль случайности" Classes="heading"/>
+              <TextBlock Text="Зерно генератора" Classes="label"/>
+              <NumericUpDown Value="{Binding Seed, Mode=TwoWay}" Minimum="1" Maximum="999999" FormatString="0"/>
+              <Button Content="⤨  Новый случайный вариант" Command="{Binding RandomizeCommand}" HorizontalAlignment="Stretch"/>
+              <TextBlock Text="Выберите операцию в истории, чтобы настроить её параметры." Classes="muted" FontSize="10" TextWrapping="Wrap"/>
+            </StackPanel>
+          </ScrollViewer>
+        </Grid>
+      </Border>
+      <Grid Grid.Column="1" RowDefinitions="*,170" RowSpacing="12">
+        <Border Classes="card">
+          <Grid RowDefinitions="Auto,*,34">
+            <Border Classes="panelHead">
+              <Grid ColumnDefinitions="Auto,*,Auto">
+                <TextBlock Text="{Binding Workspace.SelectedSample.Name}" Classes="accent"/>
+                <TextBlock Grid.Column="1" Text="{Binding SelectedOperation.Name}" Margin="14,0" Classes="muted"/>
+                <TextBlock Grid.Column="2" Text="ПРЕВЬЮ" Classes="muted" FontSize="10"/>
+              </Grid>
+            </Border>
+            <Border Grid.Row="1" Background="#0D1112" Padding="30">
+              <c:CodePreview Modules="{Binding PreviewModules}" AllowZoom="True" PaintCommand="{Binding PaintCommand}" PanEnabled="{Binding IsHand}"/>
+            </Border>
+            <TextBlock Grid.Row="2" Text="Клик — мазок  •  Рука — перемещение  •  Колесо — масштаб" Classes="muted" FontSize="10" Margin="14,0"/>
+          </Grid>
+        </Border>
+        <Border Grid.Row="1" Classes="card">
+          <Grid RowDefinitions="Auto,*">
+            <Border Classes="panelHead">
+              <TextBlock Text="Промежуточные кадры" Classes="heading"/>
+            </Border>
+            <ListBox Grid.Row="1" ItemsSource="{Binding Frames}" SelectedItem="{Binding SelectedOperation, Mode=TwoWay}" HorizontalAlignment="Stretch">
+              <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                  <StackPanel Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+              </ListBox.ItemsPanel>
+              <ListBox.ItemTemplate>
+                <DataTemplate x:DataType="vm:OperationViewModel">
+                  <StackPanel Width="105" Spacing="6">
+                    <c:CodePreview Height="70" Modules="{Binding Modules}"/>
+                    <TextBlock Text="{Binding Name}" FontSize="10" TextTrimming="CharacterEllipsis"/>
+                    <TextBlock Text="{Binding Number}" Classes="muted" FontSize="9"/>
+                  </StackPanel>
+                </DataTemplate>
+              </ListBox.ItemTemplate>
+            </ListBox>
+          </Grid>
+        </Border>
+      </Grid>
+      <Border Grid.Column="2" Classes="card">
+        <Grid RowDefinitions="Auto,220,*">
+          <Border Classes="panelHead">
+            <TextBlock Text="Последовательность операций" Classes="heading"/>
+          </Border>
+          <ListBox Grid.Row="1" ItemsSource="{Binding Operations}" SelectedItem="{Binding SelectedOperation, Mode=TwoWay}">
+            <ListBox.ItemTemplate>
+              <DataTemplate x:DataType="vm:OperationViewModel">
+                <Grid ColumnDefinitions="24,*">
+                  <TextBlock Text="{Binding Number}" Classes="accent" FontSize="10"/>
+                  <StackPanel Grid.Column="1" Spacing="4">
+                    <TextBlock Text="{Binding Name}" FontSize="12"/>
+                    <TextBlock Text="{Binding Details}" Classes="muted" FontSize="10"/>
+                  </StackPanel>
+                </Grid>
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+          <ScrollViewer Grid.Row="2">
+            <StackPanel Margin="14" Spacing="8">
+              <Border Classes="divider"/>
+              <TextBlock Text="Параметры операции" Classes="heading"/>
+              <StackPanel IsVisible="{Binding IsPerspective}">
+                <TextBlock Text="Наклон по X" Classes="label"/>
+                <Slider Minimum="-30" Maximum="30" Value="{Binding AngleX, Mode=TwoWay}"/>
+                <TextBlock Text="{Binding AngleX, StringFormat={}{0:N0}°}" Classes="muted"/>
+                <TextBlock Text="Наклон по Y" Classes="label"/>
+                <Slider Minimum="-30" Maximum="30" Value="{Binding AngleY, Mode=TwoWay}"/>
+                <ComboBox ItemsSource="{Binding Interpolations}" SelectedItem="{Binding Interpolation, Mode=TwoWay}"/>
+              </StackPanel>
+              <StackPanel IsVisible="{Binding IsBlur}">
+                <TextBlock Text="Сила размытия, σ" Classes="label"/>
+                <Slider Minimum="0.1" Maximum="10" Value="{Binding Blur, Mode=TwoWay}"/>
+                <TextBlock Text="{Binding Blur, StringFormat={}{0:N1} px}" Classes="muted"/>
+              </StackPanel>
+              <StackPanel IsVisible="{Binding IsInk}">
+                <TextBlock Text="Параметры кисти находятся слева. Добавьте мазок для нового этапа." Classes="muted" TextWrapping="Wrap"/>
+              </StackPanel>
+              <Border Classes="divider"/>
+              <TextBlock Text="Область изменения   Всё изображение" Classes="muted"/>
+              <TextBlock Text="Исходник                          Защищён" Classes="accent" FontSize="11"/>
+              <Button Content="↶  Сбросить цепочку" Command="{Binding ResetCommand}" HorizontalAlignment="Stretch"/>
+              <Button Content="→  К распознаванию" Command="{ReflectionBinding $parent[Window].DataContext.NavigateCommand}" CommandParameter="03" HorizontalAlignment="Stretch"/>
+            </StackPanel>
+          </ScrollViewer>
+        </Grid>
+      </Border>
+    </Grid>
+  </Grid>
+</UserControl>

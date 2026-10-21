@@ -1,64 +1,65 @@
-<Window xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="using:QRLab.View.ViewModels"
-        x:Class="QRLab.View.Views.MainWindow" x:DataType="vm:MainWindowViewModel"
-        Title="QRLab" Width="1120" Height="720" MinWidth="720" MinHeight="480">
-  <Grid RowDefinitions="*,Auto" ColumnDefinitions="244,*">
-    <Border Background="#171D28" Padding="20,28" BorderBrush="#293344" BorderThickness="0,0,1,0">
-      <Grid RowDefinitions="Auto,Auto,*,Auto">
-        <StackPanel Orientation="Horizontal" Spacing="12">
-          <TextBlock Text="QRLab" FontSize="28" FontWeight="Bold" />
-          <TextBlock Text="{Binding Version}" Classes="muted" VerticalAlignment="Center" />
+<Window xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:vm="using:QRLab.View.ViewModels" xmlns:views="using:QRLab.View.Views" x:Class="QRLab.View.Views.MainWindow" x:DataType="vm:MainWindowViewModel" Title="QRLab — лаборатория устойчивости кодов" Width="1440" Height="940" MinWidth="1180" MinHeight="760">
+  <Window.DataTemplates>
+    <DataTemplate DataType="{x:Type vm:GenerationViewModel}">
+      <views:GenerationView/>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vm:MutationsViewModel}">
+      <views:MutationsView/>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vm:ReadingViewModel}">
+      <views:ReadingView/>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vm:ComparisonViewModel}">
+      <views:ComparisonView/>
+    </DataTemplate>
+  </Window.DataTemplates>
+  <Grid RowDefinitions="42,*,30,76">
+    <Border Background="#1A1F21" BorderBrush="#303839" BorderThickness="0,0,0,1" Padding="20,0">
+      <Grid ColumnDefinitions="Auto,*,Auto">
+        <StackPanel Orientation="Horizontal" Spacing="10">
+          <TextBlock Text="▣" Foreground="#75D9BE" FontSize="22"/>
+          <TextBlock Text="QRLab" FontWeight="Bold" FontSize="15"/>
+          <TextBlock Text="/" Classes="muted" Margin="12,0"/>
+          <Button Classes="flat" Content="О проекте" Command="{Binding AboutCommand}"/>
         </StackPanel>
-        <TextBlock Grid.Row="1" Text="Лаборатория кодов и сигналов" Classes="muted" Margin="0,8,0,30" FontSize="12" />
-        <ListBox Grid.Row="2" ItemsSource="{Binding Screens}"
-                 SelectedItem="{Binding SelectedScreen, Mode=TwoWay}"
-                 Background="Transparent" BorderThickness="0"
-                 SelectionMode="Single" HorizontalAlignment="Stretch" VerticalAlignment="Top">
-          <ListBox.ItemTemplate>
-            <DataTemplate x:DataType="vm:ScreenViewModel">
-              <Grid ColumnDefinitions="28,*">
-                <TextBlock Text="{Binding Number}" Foreground="#7DA9FF" FontSize="11" VerticalAlignment="Center" />
-                <TextBlock Grid.Column="1" Text="{Binding Title}" FontSize="13" />
-              </Grid>
-            </DataTemplate>
-          </ListBox.ItemTemplate>
-        </ListBox>
-        <TextBlock Grid.Row="3" Text="Учебная рабочая среда" Classes="muted" FontSize="12" />
+        <TextBlock Grid.Column="1" Text="Устойчивость кодов · Лабораторная работа № 04" Classes="muted" HorizontalAlignment="Center"/>
+        <TextBlock Grid.Column="2" Text="●   РЕЖИМ МАКЕТА" Classes="accent" FontSize="10" LetterSpacing="1"/>
       </Grid>
     </Border>
-    <Grid Grid.Column="1" RowDefinitions="Auto,*" Margin="32,28">
-      <StackPanel Spacing="6" Margin="0,0,0,28">
-        <TextBlock Text="ТЕКУЩИЙ ПРОЕКТ" Classes="muted" FontSize="11" LetterSpacing="2" />
-        <TextBlock Text="{Binding Project.Name}" FontSize="18" FontWeight="SemiBold" TextWrapping="Wrap" />
-      </StackPanel>
-      <ContentControl Grid.Row="1" Content="{Binding SelectedScreen}"
-                      HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
-        <ContentControl.ContentTemplate>
+    <ContentControl Grid.Row="1" Content="{Binding SelectedScreen}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/>
+    <Border Grid.Row="2" BorderBrush="#303839" BorderThickness="0,1,0,0" Padding="18,0">
+      <Grid ColumnDefinitions="Auto,*,Auto">
+        <TextBlock Text="ПРОЕКТ / LP-04     •     НАБОР 01" Classes="muted" FontSize="10"/>
+        <TextBlock Grid.Column="1" Text="{Binding Workspace.Notice}" TextTrimming="CharacterEllipsis" TextAlignment="Center" Margin="16,0" Classes="muted" FontSize="10"/>
+        <TextBlock Grid.Column="2" Text="AVALONIA / MVVM" Classes="muted" FontSize="10"/>
+      </Grid>
+    </Border>
+    <Border Grid.Row="3" Background="#0E1213">
+      <ListBox Classes="nav" HorizontalAlignment="Center" ItemsSource="{Binding Screens}" SelectedItem="{Binding SelectedScreen, Mode=TwoWay}" SelectionMode="Single">
+        <ListBox.ItemsPanel>
+          <ItemsPanelTemplate>
+            <StackPanel Orientation="Horizontal"/>
+          </ItemsPanelTemplate>
+        </ListBox.ItemsPanel>
+        <ListBox.ItemTemplate>
           <DataTemplate x:DataType="vm:ScreenViewModel">
-            <ScrollViewer HorizontalScrollBarVisibility="Disabled">
-              <StackPanel Spacing="16">
-                <TextBlock Text="{Binding Title}" FontSize="30" FontWeight="SemiBold" TextWrapping="Wrap" />
-                <TextBlock Text="{Binding Description}" Classes="muted" FontSize="15" />
-                <Border Background="#191F2B" BorderBrush="#2B374A" BorderThickness="1"
-                        CornerRadius="12" Padding="28" Margin="0,16,0,0">
-                  <StackPanel Spacing="10">
-                    <TextBlock Text="Рабочая область" FontSize="18" FontWeight="SemiBold" />
-                    <TextBlock Text="{Binding Placeholder}" Classes="muted" />
-                  </StackPanel>
-                </Border>
-              </StackPanel>
-            </ScrollViewer>
+            <StackPanel Spacing="7">
+              <TextBlock Text="{Binding Number}" HorizontalAlignment="Center" Foreground="#75D9BE" FontSize="17" FontFamily="Consolas"/>
+              <TextBlock Text="{Binding Title}" HorizontalAlignment="Center" FontSize="11"/>
+            </StackPanel>
           </DataTemplate>
-        </ContentControl.ContentTemplate>
-      </ContentControl>
-    </Grid>
-    <Border Grid.Row="1" Grid.ColumnSpan="2" Background="#131923" BorderBrush="#293344" BorderThickness="0,1,0,0" Padding="20,12">
-      <WrapPanel Orientation="Horizontal">
-        <TextBlock Text="{Binding CoreStatus}" Foreground="#8DDFB6" Margin="0,0,28,0" FontSize="12" />
-        <TextBlock Text="{Binding ImageStatus}" Foreground="#8DDFB6" FontSize="12" />
-      </WrapPanel>
+        </ListBox.ItemTemplate>
+      </ListBox>
+    </Border>
+    <Border Grid.RowSpan="4" Background="#DD0B1011" IsVisible="{Binding IsAboutOpen}">
+      <Border Classes="card" Width="480" Padding="32" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <StackPanel Spacing="18">
+          <TextBlock Text="QRLab / лаборатория кодов" FontSize="22" FontWeight="SemiBold"/>
+          <TextBlock Text="Четыре этапа исследования: создание набора, настройка искажений, распознавание и сравнение." TextWrapping="Wrap"/>
+          <TextBlock Text="Интерактивный макет. Изображения и результаты демонстрационные. Настоящие генерация, обработка и декодирование будут подключены через сервисы." Classes="muted" TextWrapping="Wrap"/>
+          <Button Classes="primary" Content="Вернуться к работе" Command="{Binding AboutCommand}"/>
+        </StackPanel>
+      </Border>
     </Border>
   </Grid>
 </Window>
-

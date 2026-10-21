@@ -1,8 +1,8 @@
+using CommunityToolkit.Mvvm.ComponentModel;
 namespace QRLab.View.ViewModels;
-
-/// <summary>Содержимое одного из разделов на этапе каркаса.</summary>
-public sealed record ScreenViewModel(string Number, string Title, string Description)
+public abstract class ScreenViewModel(string number, string title, string description) : ObservableObject
 {
-    public string Placeholder => "Функциональность будет добавлена позже";
+    public string Number { get; } = number;
+    public string Title { get; } = title;
+    public string Description { get; } = description;
 }
-

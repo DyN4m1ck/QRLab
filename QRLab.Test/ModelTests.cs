@@ -53,20 +53,11 @@ public sealed class ModelTests
     }
 
     [Fact]
-    public void ModuleStatusComesFromModules()
-    {
-        var vm = new MainWindowViewModel();
-        Assert.False(string.IsNullOrWhiteSpace(new ImageModuleInfo().GetStatus()));
-        Assert.Equal(new CoreModuleInfo().GetStatus(), vm.CoreStatus);
-        Assert.Equal(new ImageModuleInfo().GetStatus(), vm.ImageStatus);
-    }
-
-    [Fact]
     public void NavigationRaisesNotificationsForAllSections()
     {
-        var vm = new MainWindowViewModel();
+        var vm = new MainWindowViewModel(new QRLab.Image.Demo.PrototypeData());
         Assert.Equal(4, vm.Screens.Count);
-        Assert.Equal("Генератор", vm.SelectedScreen.Title);
+        Assert.Equal("Генерация кодов", vm.SelectedScreen.Title);
         var notifications = new List<string?>();
         vm.PropertyChanged += (_, args) => notifications.Add(args.PropertyName);
         foreach (var screen in vm.Screens.Skip(1))
