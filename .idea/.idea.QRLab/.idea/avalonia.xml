@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AvaloniaProject">
+    <option name="projectPerEditor">
+      <map>
+        <entry key="QRLab.View/App.axaml" value="QRLab.View/QRLab.View.csproj" />
+        <entry key="QRLab.View/Views/MainWindow.axaml" value="QRLab.View/QRLab.View.csproj" />
+      </map>
+    </option>
+  </component>
+</project>

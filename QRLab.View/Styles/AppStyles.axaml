@@ -1,0 +1,17 @@
+<Styles xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Style Selector="Window">
+    <Setter Property="FontFamily" Value="fonts:Inter#Inter" />
+    <Setter Property="Background" Value="#10141C" />
+    <Setter Property="Foreground" Value="#E8EDF5" />
+  </Style>
+  <Style Selector="TextBlock.muted">
+    <Setter Property="Foreground" Value="#A0AEC0" />
+    <Setter Property="TextWrapping" Value="Wrap" />
+  </Style>
+  <Style Selector="ListBoxItem">
+    <Setter Property="Padding" Value="12,14" />
+    <Setter Property="Margin" Value="0,3" />
+    <Setter Property="CornerRadius" Value="8" />
+  </Style>
+</Styles>
+

@@ -1,0 +1,64 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:QRLab.View.ViewModels"
+        x:Class="QRLab.View.Views.MainWindow" x:DataType="vm:MainWindowViewModel"
+        Title="QRLab" Width="1120" Height="720" MinWidth="720" MinHeight="480">
+  <Grid RowDefinitions="*,Auto" ColumnDefinitions="244,*">
+    <Border Background="#171D28" Padding="20,28" BorderBrush="#293344" BorderThickness="0,0,1,0">
+      <Grid RowDefinitions="Auto,Auto,*,Auto">
+        <StackPanel Orientation="Horizontal" Spacing="12">
+          <TextBlock Text="QRLab" FontSize="28" FontWeight="Bold" />
+          <TextBlock Text="{Binding Version}" Classes="muted" VerticalAlignment="Center" />
+        </StackPanel>
+        <TextBlock Grid.Row="1" Text="Лаборатория кодов и сигналов" Classes="muted" Margin="0,8,0,30" FontSize="12" />
+        <ListBox Grid.Row="2" ItemsSource="{Binding Screens}"
+                 SelectedItem="{Binding SelectedScreen, Mode=TwoWay}"
+                 Background="Transparent" BorderThickness="0"
+                 SelectionMode="Single" HorizontalAlignment="Stretch" VerticalAlignment="Top">
+          <ListBox.ItemTemplate>
+            <DataTemplate x:DataType="vm:ScreenViewModel">
+              <Grid ColumnDefinitions="28,*">
+                <TextBlock Text="{Binding Number}" Foreground="#7DA9FF" FontSize="11" VerticalAlignment="Center" />
+                <TextBlock Grid.Column="1" Text="{Binding Title}" FontSize="13" />
+              </Grid>
+            </DataTemplate>
+          </ListBox.ItemTemplate>
+        </ListBox>
+        <TextBlock Grid.Row="3" Text="Учебная рабочая среда" Classes="muted" FontSize="12" />
+      </Grid>
+    </Border>
+    <Grid Grid.Column="1" RowDefinitions="Auto,*" Margin="32,28">
+      <StackPanel Spacing="6" Margin="0,0,0,28">
+        <TextBlock Text="ТЕКУЩИЙ ПРОЕКТ" Classes="muted" FontSize="11" LetterSpacing="2" />
+        <TextBlock Text="{Binding Project.Name}" FontSize="18" FontWeight="SemiBold" TextWrapping="Wrap" />
+      </StackPanel>
+      <ContentControl Grid.Row="1" Content="{Binding SelectedScreen}"
+                      HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+        <ContentControl.ContentTemplate>
+          <DataTemplate x:DataType="vm:ScreenViewModel">
+            <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+              <StackPanel Spacing="16">
+                <TextBlock Text="{Binding Title}" FontSize="30" FontWeight="SemiBold" TextWrapping="Wrap" />
+                <TextBlock Text="{Binding Description}" Classes="muted" FontSize="15" />
+                <Border Background="#191F2B" BorderBrush="#2B374A" BorderThickness="1"
+                        CornerRadius="12" Padding="28" Margin="0,16,0,0">
+                  <StackPanel Spacing="10">
+                    <TextBlock Text="Рабочая область" FontSize="18" FontWeight="SemiBold" />
+                    <TextBlock Text="{Binding Placeholder}" Classes="muted" />
+                  </StackPanel>
+                </Border>
+              </StackPanel>
+            </ScrollViewer>
+          </DataTemplate>
+        </ContentControl.ContentTemplate>
+      </ContentControl>
+    </Grid>
+    <Border Grid.Row="1" Grid.ColumnSpan="2" Background="#131923" BorderBrush="#293344" BorderThickness="0,1,0,0" Padding="20,12">
+      <WrapPanel Orientation="Horizontal">
+        <TextBlock Text="{Binding CoreStatus}" Foreground="#8DDFB6" Margin="0,0,28,0" FontSize="12" />
+        <TextBlock Text="{Binding ImageStatus}" Foreground="#8DDFB6" FontSize="12" />
+      </WrapPanel>
+    </Border>
+  </Grid>
+</Window>
+
