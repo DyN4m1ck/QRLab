@@ -29,7 +29,7 @@ public sealed partial class GenerationViewModel(WorkspaceViewModel workspace)
     public bool IsQr => Format == "QR-код";
     partial void OnFormatChanged(string value) => OnPropertyChanged(nameof(IsQr));
     public bool IsBatch => Mode == "Пакет";
-    public string GenerateLabel => IsBatch ? $"＋  Подготовить {Count ?? 1} кодов" : "＋  Подготовить код";
+    public string GenerateLabel => IsBatch ? $"Подготовить {Count ?? 1} кодов" : "Подготовить код";
     partial void OnModeChanged(string value) { OnPropertyChanged(nameof(IsBatch)); OnPropertyChanged(nameof(GenerateLabel)); }
     partial void OnCountChanged(decimal? value) => OnPropertyChanged(nameof(GenerateLabel));
     [RelayCommand] private void Generate()

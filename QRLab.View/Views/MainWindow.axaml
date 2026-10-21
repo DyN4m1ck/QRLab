@@ -1,4 +1,4 @@
-<Window xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:vm="using:QRLab.View.ViewModels" xmlns:views="using:QRLab.View.Views" x:Class="QRLab.View.Views.MainWindow" x:DataType="vm:MainWindowViewModel" Title="QRLab — лаборатория устойчивости кодов" Width="1440" Height="940" MinWidth="1180" MinHeight="760">
+<Window xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:vm="using:QRLab.View.ViewModels" xmlns:views="using:QRLab.View.Views" xmlns:icons="using:QRLab.View.Controls" x:Class="QRLab.View.Views.MainWindow" x:DataType="vm:MainWindowViewModel" Title="QRLab — лаборатория устойчивости кодов" Width="1440" Height="940" MinWidth="1180" MinHeight="760">
   <Window.DataTemplates>
     <DataTemplate DataType="{x:Type vm:GenerationViewModel}">
       <views:GenerationView/>
@@ -17,13 +17,12 @@
     <Border Background="#1A1F21" BorderBrush="#303839" BorderThickness="0,0,0,1" Padding="20,0">
       <Grid ColumnDefinitions="Auto,*,Auto">
         <StackPanel Orientation="Horizontal" Spacing="10">
-          <TextBlock Text="▣" Foreground="#75D9BE" FontSize="22"/>
+          <icons:SvgIcon Source="logo" Width="20" Height="20" Foreground="#75D9BE"/>
           <TextBlock Text="QRLab" FontWeight="Bold" FontSize="15"/>
           <TextBlock Text="/" Classes="muted" Margin="12,0"/>
           <Button Classes="flat" Content="О проекте" Command="{Binding AboutCommand}"/>
         </StackPanel>
-        <TextBlock Grid.Column="1" Text="Устойчивость кодов · Лабораторная работа № 04" Classes="muted" HorizontalAlignment="Center"/>
-        <TextBlock Grid.Column="2" Text="●   РЕЖИМ МАКЕТА" Classes="accent" FontSize="10" LetterSpacing="1"/>
+        <TextBlock Grid.Column="2" Text="●" Classes="accent" FontSize="10" LetterSpacing="1"/>
       </Grid>
     </Border>
     <ContentControl Grid.Row="1" Content="{Binding SelectedScreen}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/>
@@ -44,7 +43,7 @@
         <ListBox.ItemTemplate>
           <DataTemplate x:DataType="vm:ScreenViewModel">
             <StackPanel Spacing="7">
-              <TextBlock Text="{Binding Number}" HorizontalAlignment="Center" Foreground="#75D9BE" FontSize="17" FontFamily="Consolas"/>
+              <icons:SvgIcon Source="{Binding Number, Converter={StaticResource IconName}}" Width="20" Height="20" HorizontalAlignment="Center"/>
               <TextBlock Text="{Binding Title}" HorizontalAlignment="Center" FontSize="11"/>
             </StackPanel>
           </DataTemplate>

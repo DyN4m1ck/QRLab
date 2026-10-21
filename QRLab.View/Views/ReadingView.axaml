@@ -1,4 +1,4 @@
-<UserControl xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:vm="using:QRLab.View.ViewModels" xmlns:c="using:QRLab.View.Controls" x:Class="QRLab.View.Views.ReadingView" x:DataType="vm:ReadingViewModel">
+<UserControl xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:vm="using:QRLab.View.ViewModels" xmlns:c="using:QRLab.View.Controls" xmlns:icons="using:QRLab.View.Controls" x:Class="QRLab.View.Views.ReadingView" x:DataType="vm:ReadingViewModel">
   <Grid Margin="18" RowDefinitions="Auto,Auto,*" RowSpacing="12">
     <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,16">
       <StackPanel Spacing="4">
@@ -6,8 +6,18 @@
         <TextBlock Text="{Binding Description}" Classes="muted"/>
       </StackPanel>
       <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
-        <Button Content="↓  Экспорт CSV" Command="{Binding ExportCommand}"/>
-        <Button Classes="primary" Content="▷  Запустить распознавание" Command="{Binding RunCommand}"/>
+        <Button Command="{Binding ExportCommand}">
+          <StackPanel Orientation="Horizontal" Spacing="7">
+            <icons:SvgIcon Source="load"/>
+            <TextBlock Text="Экспорт CSV"/>
+          </StackPanel>
+        </Button>
+        <Button Classes="primary" Command="{Binding RunCommand}">
+          <StackPanel Orientation="Horizontal" Spacing="7">
+            <icons:SvgIcon Source="play"/>
+            <TextBlock Text="Запустить распознавание"/>
+          </StackPanel>
+        </Button>
       </StackPanel>
     </Grid>
     <Grid Grid.Row="2" ColumnDefinitions="*,280" ColumnSpacing="12">
@@ -47,7 +57,10 @@
                   <TextBlock Grid.Column="3" Text="{Binding Decoded}" FontSize="10" Classes="mono"/>
                   <TextBlock Grid.Column="4" Text="{Binding Time}" FontSize="11" Classes="mono"/>
                   <Border Grid.Column="1" IsVisible="{Binding IsFailure}" Background="#422C2C" CornerRadius="3" Padding="6,4" HorizontalAlignment="Left">
-                    <TextBlock Text="{Binding Status}" Classes="danger" FontSize="10"/>
+                    <StackPanel Orientation="Horizontal" Spacing="7">
+                      <icons:SvgIcon Source="cross-in-circle" Foreground="#E58A86" Width="11" Height="11"/>
+                      <TextBlock Text="{Binding Status}" Classes="danger" FontSize="10"/>
+                    </StackPanel>
                   </Border>
                 </Grid>
               </DataTemplate>
@@ -65,7 +78,10 @@
             <Border Classes="card">
               <StackPanel>
                 <Border Classes="panelHead">
-                  <TextBlock Text="Параметры прогона" Classes="heading"/>
+                  <StackPanel Orientation="Horizontal" Spacing="7">
+                    <icons:SvgIcon Source="config"/>
+                    <TextBlock Text="Параметры прогона" Classes="heading"/>
+                  </StackPanel>
                 </Border>
                 <StackPanel Margin="14" Spacing="8">
                   <TextBlock Text="Декодер" Classes="label"/>
@@ -104,7 +120,12 @@
           <StackPanel Spacing="12">
             <TextBlock Text="{Binding Workspace.SelectedSample.Name}" Classes="accent"/>
             <TextBlock Text="{Binding Workspace.SelectedSample.Content}" Classes="mono"/>
-            <Button Content="→  Открыть сравнение" Command="{ReflectionBinding $parent[Window].DataContext.NavigateCommand}" CommandParameter="04" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+            <Button Command="{ReflectionBinding $parent[Window].DataContext.NavigateCommand}" CommandParameter="04" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">
+              <StackPanel Orientation="Horizontal" Spacing="7">
+                <icons:SvgIcon Source="arrow-right"/>
+                <TextBlock Text="Открыть сравнение"/>
+              </StackPanel>
+            </Button>
           </StackPanel>
         </Border>
       </Grid>
@@ -119,7 +140,12 @@
           <TextBlock Text="В таблицу войдут все образцы текущего набора." Classes="muted"/>
           <StackPanel Orientation="Horizontal" Spacing="8">
             <Button Content="Отмена" Command="{Binding ExportCommand}"/>
-            <Button Classes="primary" Content="Экспортировать CSV" Command="{Binding ConfirmExportCommand}"/>
+            <Button Classes="primary" Command="{Binding ConfirmExportCommand}">
+              <StackPanel Orientation="Horizontal" Spacing="7">
+                <icons:SvgIcon Source="load"/>
+                <TextBlock Text="Экспортировать CSV"/>
+              </StackPanel>
+            </Button>
           </StackPanel>
         </StackPanel>
       </Border>

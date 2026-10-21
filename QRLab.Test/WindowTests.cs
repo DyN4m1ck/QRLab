@@ -3,6 +3,8 @@ using Avalonia.Controls;
 using Avalonia.Headless;
 using Avalonia.Headless.XUnit;
 using Avalonia.Media.Imaging;
+using Avalonia.Media;
+using QRLab.View.Controls;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using QRLab.Image.Demo;
@@ -34,6 +36,16 @@ public sealed class WindowTests
                 Dispatcher.UIThread.RunJobs();
                 window.UpdateLayout();
                 Assert.Same(screen, vm.SelectedScreen);
+                var navIcons = navigation.GetVisualDescendants().OfType<SvgIcon>().ToArray();
+                Assert.Equal(4, navIcons.Length);
+                Assert.All(navIcons, icon =>
+                {
+                    var item = icon.GetVisualAncestors().OfType<ListBoxItem>().First();
+                    var expected = Color.Parse(item.IsSelected ? "#75D9BE" : "#86928F");
+                    Assert.Equal(expected, Assert.IsAssignableFrom<ISolidColorBrush>(icon.Foreground).Color);
+                    var caption = item.GetVisualDescendants().OfType<TextBlock>().Single();
+                    Assert.Equal(expected, Assert.IsAssignableFrom<ISolidColorBrush>(caption.Foreground).Color);
+                });
                 var text = window.GetVisualDescendants().OfType<TextBlock>().Select(t => t.Text).ToList();
                 Assert.Contains(screen.Title, text);
                 Assert.Contains(screen.Description, text);
@@ -57,7 +69,7 @@ public sealed class WindowTests
         try
         {
             window.Show(); Dispatcher.UIThread.RunJobs();
-            var button = window.GetVisualDescendants().OfType<Button>().Single(b => Equals(b.Content, "→  Перейти к мутациям"));
+            var button = window.GetVisualDescendants().OfType<Button>().Single(b => b.Command == vm.NavigateCommand && Equals(b.CommandParameter, "02"));
             Assert.NotNull(button.Command); button.Command.Execute(button.CommandParameter);
             Dispatcher.UIThread.RunJobs();
             Assert.Same(vm.Mutations, vm.SelectedScreen);

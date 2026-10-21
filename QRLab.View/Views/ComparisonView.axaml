@@ -1,4 +1,4 @@
-<UserControl xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:vm="using:QRLab.View.ViewModels" xmlns:c="using:QRLab.View.Controls" x:Class="QRLab.View.Views.ComparisonView" x:DataType="vm:ComparisonViewModel">
+<UserControl xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:vm="using:QRLab.View.ViewModels" xmlns:c="using:QRLab.View.Controls" xmlns:icons="using:QRLab.View.Controls" x:Class="QRLab.View.Views.ComparisonView" x:DataType="vm:ComparisonViewModel">
   <Grid Margin="18" RowDefinitions="Auto,*">
     <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,16">
       <StackPanel Spacing="4">
@@ -6,9 +6,19 @@
         <TextBlock Text="{Binding Description}" Classes="muted"/>
       </StackPanel>
       <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
-        <Button Content="‹  Предыдущий" Command="{Binding Workspace.PreviousCommand}"/>
+        <Button Command="{Binding Workspace.PreviousCommand}" ToolTip.Tip="Предыдущий образец">
+          <StackPanel Orientation="Horizontal" Spacing="7">
+            <icons:SvgIcon Source="arrow-right" Width="12" Height="12" RenderTransform="rotate(180deg)" RenderTransformOrigin="50%,50%"/>
+            <TextBlock Text="Предыдущий"/>
+          </StackPanel>
+        </Button>
         <TextBlock Text="{Binding Workspace.Position}" Classes="muted" Margin="6,0"/>
-        <Button Content="Следующий  ›" Command="{Binding Workspace.NextCommand}"/>
+        <Button Command="{Binding Workspace.NextCommand}" ToolTip.Tip="Следующий образец">
+          <StackPanel Orientation="Horizontal" Spacing="7">
+            <TextBlock Text="Следующий"/>
+            <icons:SvgIcon Source="arrow-right" Width="12" Height="12"/>
+          </StackPanel>
+        </Button>
       </StackPanel>
     </Grid>
     <Grid Grid.Row="1" ColumnDefinitions="*,280" ColumnSpacing="12">
@@ -19,7 +29,10 @@
               <Border Classes="panelHead">
                 <Grid ColumnDefinitions="*,Auto">
                   <TextBlock Text="А   Исходник" Classes="heading"/>
-                  <TextBlock Grid.Column="1" Text="Защищён" Classes="accent" FontSize="10"/>
+                  <StackPanel Orientation="Horizontal" Spacing="7" Grid.Column="1">
+                    <icons:SvgIcon Source="lock" Foreground="{DynamicResource ActiveIconBrush}" Width="12" Height="12"/>
+                    <TextBlock Text="Защищён" Classes="accent" FontSize="10"/>
+                  </StackPanel>
                 </Grid>
               </Border>
               <Border Grid.Row="1" Background="#0D1112" Padding="20">
@@ -68,19 +81,30 @@
         </Border>
         <Border Grid.Row="1" Classes="card" Padding="8">
           <Grid ColumnDefinitions="Auto,*,Auto">
-            <ListBox Classes="tabs" ItemsSource="{Binding Modes}" SelectedItem="{Binding Mode, Mode=TwoWay}">
+            <ListBox Classes="tabs iconTabs" ItemsSource="{Binding Modes}" SelectedItem="{Binding Mode, Mode=TwoWay}">
               <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                   <StackPanel Orientation="Horizontal"/>
                 </ItemsPanelTemplate>
               </ListBox.ItemsPanel>
+              <ListBox.ItemTemplate>
+                <DataTemplate x:DataType="x:String">
+                  <StackPanel Orientation="Horizontal" Spacing="6">
+                    <icons:SvgIcon Source="{Binding Converter={StaticResource IconName}}"/>
+                    <TextBlock Text="{Binding}"/>
+                  </StackPanel>
+                </DataTemplate>
+              </ListBox.ItemTemplate>
             </ListBox>
             <StackPanel Grid.Column="1" Orientation="Horizontal" IsVisible="{Binding IsOverlay}" HorizontalAlignment="Center">
               <TextBlock Text="Слой Б" Classes="muted"/>
               <Slider Width="130" Minimum="0" Maximum="100" Value="{Binding OverlayOpacity, Mode=TwoWay}"/>
             </StackPanel>
             <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="10">
-              <TextBlock Text="Масштаб" Classes="muted"/>
+              <StackPanel Orientation="Horizontal" Spacing="7">
+                <icons:SvgIcon Source="link"/>
+                <TextBlock Text="Масштаб" Classes="muted"/>
+              </StackPanel>
               <Slider Width="120" Minimum="50" Maximum="200" Value="{Binding Zoom, Mode=TwoWay}"/>
               <TextBlock Text="{Binding Zoom, StringFormat={}{0:N0}%}" Classes="accent" Width="40"/>
             </StackPanel>
@@ -127,7 +151,10 @@
               </Border>
               <StackPanel Margin="14" Spacing="12">
                 <TextBlock Text="{Binding Workspace.SelectedSample.Content}" Classes="mono" FontSize="16"/>
-                <TextBlock Text="Исходник защищён от изменений" Classes="accent" FontSize="11"/>
+                <StackPanel Orientation="Horizontal" Spacing="7">
+                  <icons:SvgIcon Source="lock" Foreground="{DynamicResource ActiveIconBrush}" Width="12" Height="12"/>
+                  <TextBlock Text="Исходник защищён от изменений" Classes="accent" FontSize="11"/>
+                </StackPanel>
                 <TextBlock Text="Текущий образец общий для всех четырёх экранов." Classes="muted" TextWrapping="Wrap"/>
               </StackPanel>
             </StackPanel>
@@ -135,7 +162,10 @@
           <Border Classes="card">
             <StackPanel>
               <Border Classes="panelHead">
-                <TextBlock Text="Параметры операций" Classes="heading"/>
+                <StackPanel Orientation="Horizontal" Spacing="7">
+                  <icons:SvgIcon Source="config"/>
+                  <TextBlock Text="Параметры операций" Classes="heading"/>
+                </StackPanel>
               </Border>
               <ItemsControl ItemsSource="{Binding Workspace.SelectedSample.Operations}" Margin="14">
                 <ItemsControl.ItemTemplate>
@@ -150,7 +180,12 @@
                   </DataTemplate>
                 </ItemsControl.ItemTemplate>
               </ItemsControl>
-              <Button Content="↗  Открыть в мутациях" Command="{ReflectionBinding $parent[Window].DataContext.NavigateCommand}" CommandParameter="02" Margin="14" HorizontalAlignment="Stretch"/>
+              <Button Command="{ReflectionBinding $parent[Window].DataContext.NavigateCommand}" CommandParameter="02" Margin="14" HorizontalAlignment="Stretch">
+                <StackPanel Orientation="Horizontal" Spacing="7">
+                  <icons:SvgIcon Source="arrow-right"/>
+                  <TextBlock Text="Открыть в мутациях"/>
+                </StackPanel>
+              </Button>
             </StackPanel>
           </Border>
           <Border Classes="card" Padding="14">

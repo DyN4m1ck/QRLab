@@ -1,4 +1,4 @@
-<UserControl xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:vm="using:QRLab.View.ViewModels" xmlns:c="using:QRLab.View.Controls" xmlns:core="using:QRLab.Core.Services" x:Class="QRLab.View.Views.GenerationView" x:DataType="vm:GenerationViewModel">
+<UserControl xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:vm="using:QRLab.View.ViewModels" xmlns:c="using:QRLab.View.Controls" xmlns:core="using:QRLab.Core.Services" xmlns:icons="using:QRLab.View.Controls" x:Class="QRLab.View.Views.GenerationView" x:DataType="vm:GenerationViewModel">
   <Grid Margin="18" RowDefinitions="Auto,*">
     <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,16">
       <StackPanel Spacing="4">
@@ -6,15 +6,28 @@
         <TextBlock Text="{Binding Description}" Classes="muted"/>
       </StackPanel>
       <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
-        <Button Content="▱  Открыть набор" Command="{Binding OpenLibraryCommand}"/>
-        <Button Content="↓  Экспорт набора" Command="{Binding ExportCommand}"/>
+        <Button Command="{Binding OpenLibraryCommand}">
+          <StackPanel Orientation="Horizontal" Spacing="7">
+            <icons:SvgIcon Source="folder"/>
+            <TextBlock Text="Открыть набор"/>
+          </StackPanel>
+        </Button>
+        <Button Command="{Binding ExportCommand}">
+          <StackPanel Orientation="Horizontal" Spacing="7">
+            <icons:SvgIcon Source="load"/>
+            <TextBlock Text="Экспорт набора"/>
+          </StackPanel>
+        </Button>
       </StackPanel>
     </Grid>
     <Grid Grid.Row="1" ColumnDefinitions="250,*,260" ColumnSpacing="12">
       <Border Classes="card">
         <Grid RowDefinitions="Auto,*,Auto">
           <Border Classes="panelHead">
-            <TextBlock Text="Параметры генерации" Classes="heading"/>
+            <StackPanel Orientation="Horizontal" Spacing="7">
+              <icons:SvgIcon Source="config"/>
+              <TextBlock Text="Параметры генерации" Classes="heading"/>
+            </StackPanel>
           </Border>
           <ScrollViewer Grid.Row="1">
             <StackPanel Margin="14" Spacing="5">
@@ -26,12 +39,20 @@
                 </ListBox.ItemsPanel>
               </ListBox>
               <TextBlock Text="Тип кода" Classes="label"/>
-              <ListBox Classes="tabs" ItemsSource="{Binding Formats}" SelectedItem="{Binding Format, Mode=TwoWay}">
+              <ListBox Classes="tabs iconTabs" ItemsSource="{Binding Formats}" SelectedItem="{Binding Format, Mode=TwoWay}">
                 <ListBox.ItemsPanel>
                   <ItemsPanelTemplate>
                     <StackPanel Orientation="Horizontal"/>
                   </ItemsPanelTemplate>
                 </ListBox.ItemsPanel>
+                <ListBox.ItemTemplate>
+                  <DataTemplate x:DataType="x:String">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                      <icons:SvgIcon Source="{Binding Converter={StaticResource IconName}}"/>
+                      <TextBlock Text="{Binding}"/>
+                    </StackPanel>
+                  </DataTemplate>
+                </ListBox.ItemTemplate>
               </ListBox>
               <TextBlock Text="Источник содержимого" Classes="label"/>
               <ComboBox ItemsSource="{Binding Sources}" SelectedItem="{Binding Source, Mode=TwoWay}"/>
@@ -74,7 +95,12 @@
             </StackPanel>
           </ScrollViewer>
           <StackPanel Grid.Row="2" Margin="14" Spacing="8">
-            <Button Classes="primary" Content="{Binding GenerateLabel}" Command="{Binding GenerateCommand}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Margin="0,12,0,0"/>
+            <Button Classes="primary" Command="{Binding GenerateCommand}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Margin="0,12,0,0">
+              <StackPanel Orientation="Horizontal" Spacing="7">
+                <icons:SvgIcon Source="plus"/>
+                <TextBlock Text="{Binding GenerateLabel}"/>
+              </StackPanel>
+            </Button>
             <TextBlock Text="Параметры будут применены к новому набору." Classes="muted" FontSize="10" TextWrapping="Wrap"/>
           </StackPanel>
         </Grid>
@@ -90,9 +116,17 @@
             </Border>
             <Grid Grid.Row="2" ColumnDefinitions="*,Auto,Auto,Auto" Margin="14,0">
               <TextBlock Text="{Binding Workspace.SelectedSample.Name}" Classes="mono"/>
-              <Button Grid.Column="1" Classes="flat" Content="‹" Command="{Binding Workspace.PreviousCommand}"/>
+              <Button Grid.Column="1" Classes="flat" Command="{Binding Workspace.PreviousCommand}" ToolTip.Tip="Предыдущий образец">
+                <StackPanel Orientation="Horizontal" Spacing="7">
+                  <icons:SvgIcon Source="arrow-right" Width="12" Height="12" RenderTransform="rotate(180deg)" RenderTransformOrigin="50%,50%"/>
+                </StackPanel>
+              </Button>
               <TextBlock Grid.Column="2" Text="{Binding Workspace.Position}" Classes="muted" Margin="10,0"/>
-              <Button Grid.Column="3" Classes="flat" Content="›" Command="{Binding Workspace.NextCommand}"/>
+              <Button Grid.Column="3" Classes="flat" Command="{Binding Workspace.NextCommand}" ToolTip.Tip="Следующий образец">
+                <StackPanel Orientation="Horizontal" Spacing="7">
+                  <icons:SvgIcon Source="arrow-right" Width="12" Height="12"/>
+                </StackPanel>
+              </Button>
             </Grid>
           </Grid>
         </Border>
@@ -134,14 +168,19 @@
                     <TextBlock Text="{Binding Name}" Classes="mono" FontSize="11"/>
                     <TextBlock Text="{Binding Content}" Classes="muted" FontSize="10"/>
                   </StackPanel>
-                  <TextBlock Grid.Column="2" Text="✓" Classes="accent"/>
+                  <icons:SvgIcon Source="ok" Foreground="#75D9BE" Grid.Column="2"/>
                 </Grid>
               </DataTemplate>
             </ListBox.ItemTemplate>
           </ListBox>
           <StackPanel Grid.Row="3" Margin="14" Spacing="10">
             <TextBlock Text="{Binding Workspace.Position}" Classes="muted"/>
-            <Button Classes="primary" Content="→  Перейти к мутациям" Command="{ReflectionBinding $parent[Window].DataContext.NavigateCommand}" CommandParameter="02" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+            <Button Classes="primary" Command="{ReflectionBinding $parent[Window].DataContext.NavigateCommand}" CommandParameter="02" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">
+              <StackPanel Orientation="Horizontal" Spacing="7">
+                <icons:SvgIcon Source="arrow-right"/>
+                <TextBlock Text="Перейти к мутациям"/>
+              </StackPanel>
+            </Button>
           </StackPanel>
         </Grid>
       </Border>
@@ -174,7 +213,12 @@
           <TextBlock Text="Экспортировать все образцы текущего набора с выбранными настройками." Classes="muted" TextWrapping="Wrap"/>
           <StackPanel Orientation="Horizontal" Spacing="8">
             <Button Content="Отмена" Command="{Binding ExportCommand}"/>
-            <Button Classes="primary" Content="Экспортировать" Command="{Binding ConfirmExportCommand}"/>
+            <Button Classes="primary" Command="{Binding ConfirmExportCommand}">
+              <StackPanel Orientation="Horizontal" Spacing="7">
+                <icons:SvgIcon Source="load"/>
+                <TextBlock Text="Экспортировать"/>
+              </StackPanel>
+            </Button>
           </StackPanel>
         </StackPanel>
       </Border>

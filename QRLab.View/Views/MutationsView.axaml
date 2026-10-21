@@ -1,4 +1,4 @@
-<UserControl xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:vm="using:QRLab.View.ViewModels" xmlns:c="using:QRLab.View.Controls" x:Class="QRLab.View.Views.MutationsView" x:DataType="vm:MutationsViewModel">
+<UserControl xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:vm="using:QRLab.View.ViewModels" xmlns:c="using:QRLab.View.Controls" xmlns:icons="using:QRLab.View.Controls" x:Class="QRLab.View.Views.MutationsView" x:DataType="vm:MutationsViewModel">
   <Grid Margin="18" RowDefinitions="Auto,*">
     <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,16">
       <StackPanel Spacing="4">
@@ -6,9 +6,24 @@
         <TextBlock Text="{Binding Description}" Classes="muted"/>
       </StackPanel>
       <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
-        <Button Content="↶  Отменить" Command="{Binding UndoCommand}"/>
-        <Button Content="↷  Повторить" Command="{Binding RedoCommand}"/>
-        <Button Classes="primary" Content="▱  Применить к набору" Command="{Binding ApplyCommand}"/>
+        <Button Command="{Binding UndoCommand}">
+          <StackPanel Orientation="Horizontal" Spacing="7">
+            <icons:SvgIcon Source="undo"/>
+            <TextBlock Text="Отменить"/>
+          </StackPanel>
+        </Button>
+        <Button Command="{Binding RedoCommand}">
+          <StackPanel Orientation="Horizontal" Spacing="7">
+            <icons:SvgIcon Source="redo"/>
+            <TextBlock Text="Повторить"/>
+          </StackPanel>
+        </Button>
+        <Button Classes="primary" Command="{Binding ApplyCommand}">
+          <StackPanel Orientation="Horizontal" Spacing="7">
+            <icons:SvgIcon Source="layers"/>
+            <TextBlock Text="Применить к набору"/>
+          </StackPanel>
+        </Button>
       </StackPanel>
     </Grid>
     <Grid Grid.Row="1" ColumnDefinitions="230,*,260" ColumnSpacing="12">
@@ -26,12 +41,20 @@
                   </ItemsPanelTemplate>
                 </ListBox.ItemsPanel>
               </ListBox>
-              <ListBox Classes="tabs" ItemsSource="{Binding Tools}" SelectedItem="{Binding Tool, Mode=TwoWay}">
+              <ListBox Classes="tabs iconTabs tools" ItemsSource="{Binding Tools}" SelectedItem="{Binding Tool, Mode=TwoWay}">
                 <ListBox.ItemsPanel>
                   <ItemsPanelTemplate>
                     <StackPanel Orientation="Horizontal"/>
                   </ItemsPanelTemplate>
                 </ListBox.ItemsPanel>
+                <ListBox.ItemTemplate>
+                  <DataTemplate x:DataType="x:String">
+                    <StackPanel Spacing="4">
+                      <icons:SvgIcon Source="{Binding Converter={StaticResource IconName}}" HorizontalAlignment="Center"/>
+                      <TextBlock Text="{Binding}"/>
+                    </StackPanel>
+                  </DataTemplate>
+                </ListBox.ItemTemplate>
               </ListBox>
               <Grid ColumnDefinitions="*,Auto">
                 <TextBlock Text="Диаметр кисти" Classes="label"/>
@@ -44,17 +67,45 @@
               </Grid>
               <Slider Minimum="5" Maximum="100" Value="{Binding Opacity, Mode=TwoWay}"/>
               <TextBlock Text="Цвет кисти                     ●  #111918" Classes="muted"/>
-              <Button IsEnabled="{Binding IsManual}" Content="＋  Добавить мазок" Command="{Binding AddCommand}" CommandParameter="2" HorizontalAlignment="Stretch"/>
+              <Button IsEnabled="{Binding IsManual}" Command="{Binding AddCommand}" CommandParameter="2" HorizontalAlignment="Stretch">
+                <StackPanel Orientation="Horizontal" Spacing="7">
+                  <icons:SvgIcon Source="plus"/>
+                  <TextBlock Text="Добавить мазок"/>
+                </StackPanel>
+              </Button>
               <Border Classes="divider"/>
               <TextBlock Text="Программные искажения" Classes="heading"/>
-              <Button Content="◉  Размытие Гаусса          ＋" Command="{Binding AddCommand}" CommandParameter="1" HorizontalAlignment="Stretch"/>
-              <Button Content="◌  Случайные кляксы       ＋" Command="{Binding AddCommand}" CommandParameter="2" HorizontalAlignment="Stretch"/>
-              <Button Content="▱  Перспектива                 ＋" Command="{Binding AddCommand}" CommandParameter="3" HorizontalAlignment="Stretch"/>
+              <Button Command="{Binding AddCommand}" CommandParameter="1" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8">
+                  <icons:SvgIcon Source="drop"/>
+                  <TextBlock Text="Размытие Гаусса" Grid.Column="1"/>
+                  <icons:SvgIcon Source="plus" Grid.Column="2" Width="12" Height="12"/>
+                </Grid>
+              </Button>
+              <Button Command="{Binding AddCommand}" CommandParameter="2" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8">
+                  <icons:SvgIcon Source="droplets"/>
+                  <TextBlock Text="Случайные кляксы" Grid.Column="1"/>
+                  <icons:SvgIcon Source="plus" Grid.Column="2" Width="12" Height="12"/>
+                </Grid>
+              </Button>
+              <Button Command="{Binding AddCommand}" CommandParameter="3" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8">
+                  <icons:SvgIcon Source="selection"/>
+                  <TextBlock Text="Перспектива" Grid.Column="1"/>
+                  <icons:SvgIcon Source="plus" Grid.Column="2" Width="12" Height="12"/>
+                </Grid>
+              </Button>
               <Border Classes="divider"/>
               <TextBlock Text="Контроль случайности" Classes="heading"/>
               <TextBlock Text="Зерно генератора" Classes="label"/>
               <NumericUpDown Value="{Binding Seed, Mode=TwoWay}" Minimum="1" Maximum="999999" FormatString="0"/>
-              <Button Content="⤨  Новый случайный вариант" Command="{Binding RandomizeCommand}" HorizontalAlignment="Stretch"/>
+              <Button Command="{Binding RandomizeCommand}" HorizontalAlignment="Stretch">
+                <StackPanel Orientation="Horizontal" Spacing="7">
+                  <icons:SvgIcon Source="shuffle"/>
+                  <TextBlock Text="Новый случайный вариант"/>
+                </StackPanel>
+              </Button>
               <TextBlock Text="Выберите операцию в истории, чтобы настроить её параметры." Classes="muted" FontSize="10" TextWrapping="Wrap"/>
             </StackPanel>
           </ScrollViewer>
@@ -121,7 +172,10 @@
           <ScrollViewer Grid.Row="2">
             <StackPanel Margin="14" Spacing="8">
               <Border Classes="divider"/>
-              <TextBlock Text="Параметры операции" Classes="heading"/>
+              <StackPanel Orientation="Horizontal" Spacing="7">
+                <icons:SvgIcon Source="config"/>
+                <TextBlock Text="Параметры операции" Classes="heading"/>
+              </StackPanel>
               <StackPanel IsVisible="{Binding IsPerspective}">
                 <TextBlock Text="Наклон по X" Classes="label"/>
                 <Slider Minimum="-30" Maximum="30" Value="{Binding AngleX, Mode=TwoWay}"/>
@@ -140,9 +194,22 @@
               </StackPanel>
               <Border Classes="divider"/>
               <TextBlock Text="Область изменения   Всё изображение" Classes="muted"/>
-              <TextBlock Text="Исходник                          Защищён" Classes="accent" FontSize="11"/>
-              <Button Content="↶  Сбросить цепочку" Command="{Binding ResetCommand}" HorizontalAlignment="Stretch"/>
-              <Button Content="→  К распознаванию" Command="{ReflectionBinding $parent[Window].DataContext.NavigateCommand}" CommandParameter="03" HorizontalAlignment="Stretch"/>
+              <StackPanel Orientation="Horizontal" Spacing="7">
+                <icons:SvgIcon Source="lock" Foreground="{DynamicResource ActiveIconBrush}" Width="12" Height="12"/>
+                <TextBlock Text="Исходник защищён" Classes="accent" FontSize="11"/>
+              </StackPanel>
+              <Button Command="{Binding ResetCommand}" HorizontalAlignment="Stretch">
+                <StackPanel Orientation="Horizontal" Spacing="7">
+                  <icons:SvgIcon Source="reload"/>
+                  <TextBlock Text="Сбросить цепочку"/>
+                </StackPanel>
+              </Button>
+              <Button Command="{ReflectionBinding $parent[Window].DataContext.NavigateCommand}" CommandParameter="03" HorizontalAlignment="Stretch">
+                <StackPanel Orientation="Horizontal" Spacing="7">
+                  <icons:SvgIcon Source="arrow-right"/>
+                  <TextBlock Text="К распознаванию"/>
+                </StackPanel>
+              </Button>
             </StackPanel>
           </ScrollViewer>
         </Grid>
