@@ -1,4 +1,5 @@
 using QRLab.Core.Services;
+// using QRLab.Image.Generation;
 namespace QRLab.Image.Demo;
 /// <summary>Synthetic preview patterns and outcomes, not a QR encoder or decoder.</summary>
 public sealed class PrototypeData : IPrototypeData
@@ -62,4 +63,15 @@ public sealed class PrototypeData : IPrototypeData
                         (x == 0 || y == 0 || x == 6 || y == 6 || x is >= 2 and <= 4 && y is >= 2 and <= 4);
         }
     }
+
+    // public byte[] GenerateQRCode(string input)
+    // {
+    //     return QRCodeGenerator.GenerateQRCode(input);
+    // }
+    // public byte[] GenerateSampleData()
+    // {
+    //     return QRCodeGenerator.GenerateSampleData("DemoText1234567890");
+    // }
 }
+
+

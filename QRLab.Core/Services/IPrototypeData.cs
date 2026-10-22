@@ -12,6 +12,7 @@ public sealed record GenerationOptions(string Template, int FirstNumber, int Cou
 public sealed record LibrarySet(string Name, int Count, string Template);
 public sealed record ExportOptions(string Destination, string Format, bool IncludeMetadata);
 public sealed record RecognitionOptions(string Decoder, int Timeout, bool Enhanced);
+
 public interface IPrototypeData
 {
     IReadOnlyList<LibrarySet> LibrarySets { get; }
@@ -21,3 +22,5 @@ public interface IPrototypeData
     IReadOnlyList<SamplePreview> CreateSamples(GenerationOptions options);
     IReadOnlyList<RecognitionPreview> Recognize(IReadOnlyList<SamplePreview> samples, RecognitionOptions options);
 }
+
+
